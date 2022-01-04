@@ -2,8 +2,6 @@
 
 The purpose of this project is to create a cheap autonomous turret, capable of detecting motion and targetting objects.
 
-![Pew Pew](https://raw.githubusercontent.com/steve-vincent/SentryTurret/master/robot.png "Working Example")
-
 ## Overview
 
 Modified project is constucted using Pi4, RaspiCam, 1/8 scale winch servos.
