@@ -29,7 +29,7 @@ class Tracking() :
         self.hsvupper = np.array([min(180,self.hsvtarget[0] + self.hsvtolerance[1]), 
                                   min(255,self.hsvtarget[1] + self.hsvtolerance[1]), 
                                   min(255,self.hsvtarget[2] + self.hsvtolerance[2])], dtype=np.uint8)
-        print "Target: Hue(",self.hsvlower[0],self.hsvupper[0],") Sat(",self.hsvlower[1],self.hsvupper[1],") Val(",self.hsvlower[2],self.hsvupper[2],")"
+        print("Target: Hue(",self.hsvlower[0],self.hsvupper[0],") Sat(",self.hsvlower[1],self.hsvupper[1],") Val(",self.hsvlower[2],self.hsvupper[2],")")
                                   
 
     def getBestContour(self, imgmask, threshold):
@@ -62,7 +62,7 @@ class Tracking() :
             displaymaskframe = cv2.cvtColor(framemask.copy(), cv2.COLOR_GRAY2BGR)
             displayframe = cv2.addWeighted(frame, 0.7, displaymaskframe, 0.3, 0)
         best_cnt = self.getBestContour(framemask, self.areathresholdcolor)  
-        if not best_cnt == None: #if match found
+        if not np.array(best_cnt).any() == None: #if match found
             #get center
             M = cv2.moments(best_cnt)
             cx,cy = int(M['m10']/M['m00']), int(M['m01']/M['m00'])   

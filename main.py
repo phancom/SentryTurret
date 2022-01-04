@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import os
@@ -23,16 +23,16 @@ import modules.Turret as Turret
 #if display, respond to mouse
 def on_click(event, cx, cy, flag, param):
     if(event==cv2.cv.CV_EVENT_LBUTTONDOWN):
-        print "moving..." + str(cx),str(cy)
+        print("moving..." + str(cx),str(cy))
         coords = (cx,cy)
         newturr = turret.coordToPulse(coords)
         currturr = (turret.xy[0],turret.xy[1])
         turret.sendTarget(newturr, currturr)   
     if(event==cv2.cv.CV_EVENT_MBUTTONDOWN):
-        print "firing..."
+        print("firing...")
         turret.fire()
     if(event==cv2.cv.CV_EVENT_RBUTTONDOWN):
-        print "exiting...(to do)"
+        print("exiting...(to do)")
 
 
 #load config
@@ -51,7 +51,7 @@ def main() :
     while (i<50): #allow 5sec for startup
         i += 1
         sleep(0.1)
-        if cam.rawframe != None:
+        if np.array(cam.rawframe).any() != None:
             break
     frame = cam.getFrame() #need during init
     
@@ -70,12 +70,12 @@ def main() :
     displaytext = "" #for writing message in window
     if os.environ.get('DISPLAY') and int(cfg['camera']['display']):
         display = True
-        print 'display found'
+        print('display found')
     else:
         display = False
-        print 'no display'
+        print('no display')
     if display:
-        cv2.namedWindow("display", cv2.cv.CV_WINDOW_AUTOSIZE)
+        cv2.namedWindow("display", cv2.WINDOW_AUTOSIZE)
         cv2.setMouseCallback("display", on_click, 0)
     
     #tracking functions
@@ -126,7 +126,7 @@ def main() :
                 cnt, motionmask = track.getMotionContour(frame, resframe, track.areathresholdobject if track.mode==3 else track.areathresholdcolor)
                 if display:
                     displayframe = cv2.cvtColor(motionmask.copy(), cv2.COLOR_GRAY2RGB)
-                if not cnt == None:
+                if not (np.array(cnt).any() == None):
                     #motionhsv
                     if track.mode == 2: #mask for mean
                         track.bgrtarget = cv2.mean(frame, motionmask)
@@ -152,9 +152,9 @@ def main() :
                         else:
                             cv2.rectangle(displayframe, (x, y), (x+w, y+h), (0,0,255), 2)
         #face        
-        elif track.mode == 1:            
+        elif track.mode == 1:
             detector = dlib.get_frontal_face_detector()
-            faces = detector(frame)   
+            faces = detector(frame)
             best_area = 0
             best_face = None
             for d in faces:
@@ -162,7 +162,7 @@ def main() :
                 if area > best_area:
                     best_area = area
                     best_face = d
-            if not best_face == None: #face points
+            if not np.array(best_face).any() == None: #face points
                 points = (best_face.left(),best_face.top(),best_face.right(),best_face.bottom())
                 tracker = dlib.correlation_tracker()
                 tracker.start_track(frame, dlib.rectangle(*points))
@@ -193,13 +193,13 @@ def main() :
 
 # Command Handler --------------------------
         if cmdlistener.cmdsent.isSet():
-            key = cmdlistener.cmd   
-            cmdlistener.reset()  
+            key = cmdlistener.cmd
+            cmdlistener.reset()
             #quit/restart
             if key=="?" or key=="h":
                 f = open(os.path.dirname(os.path.abspath(__file__)) + '/help.txt','r')
-                print(f.read())
-            elif key=="q" or key=="r": 
+                print((f.read()))
+            elif key=="q" or key=="r":
                 turret.quit()
                 cam.quit()
                 cmdlistener.quit()
@@ -222,7 +222,8 @@ def main() :
                 cam.resetFPS()   
             elif key=="t": #sample center of image
                 sampleradius = 0.02 * (cam.w / float(cfg['camera']['scaledown']))
-                framecenter = frame[(cam.h/2)-sampleradius:(cam.h/2)+sampleradius, (cam.w/2)-sampleradius:(cam.w/2)+sampleradius]
+                framecenter = frame[int((cam.h/2)-sampleradius):int((cam.h/2)+sampleradius), 
+                        int((cam.w/2)-sampleradius):int((cam.w/2)+sampleradius)]
                 framecenterhsv = cv2.cvtColor(framecenter, cv2.COLOR_BGR2HSV)
                 track.hsvtarget = [int(cv2.mean(framecenterhsv)[0]), int(cv2.mean(framecenterhsv)[1]), int(cv2.mean(framecenterhsv)[2])]
                 track.setColorRange()
@@ -250,7 +251,7 @@ def main() :
                 turret.fire()
 #--- Settings ---                  
             elif key=="i": #fps
-                print(cam.getFPS())
+                print((cam.getFPS()))
                 cam.resetFPS()
             elif key=="p": #toggle armed
                 turret.armed = not turret.armed
@@ -297,7 +298,7 @@ def main() :
                 if key=="s" or key=="x": #threshhold area
                     track.areathresholdobject = adjust(track.areathresholdobject, 1 if key=="s" else -1)
                     cfg['tolerance']['objecttrack']['areathreshold'] = track.areathresholdobject
-                print "Area(Color):", track.areathresholdcolor, "Area(Object):", track.areathresholdobject, "Trigger:", turret.firesensitivity
+                print("Area(Color):", track.areathresholdcolor, "Area(Object):", track.areathresholdobject, "Trigger:", turret.firesensitivity)
                     
         
 if __name__ == "__main__" :

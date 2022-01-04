@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import threading
 import cv2
@@ -20,20 +20,18 @@ class Capture(threading.Thread) :
         self.frametime = None
         self.framecount = 0
         self.stopped = False
-        
 
     def run(self):
         #loop to always get latest frame        
         self.capture = cv2.VideoCapture(0)
-        self.capture.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, self.w) #TODO: does this work webcam?
-        self.capture.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, self.h)       
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.w) #TODO: does this work webcam?
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.h)       
         while True:
             if self.stopped:
                 return
             _, self.rawframe = self.capture.read()
             self.frametime = datetime.datetime.now()        
 
-        
     def getFrame(self):
         frame = self.rawframe
         self.framecount = self.framecount + 1
@@ -44,16 +42,14 @@ class Capture(threading.Thread) :
             M = cv2.getRotationMatrix2D((self.w/2, self.h/2), 180, 1.0)
             frame = cv2.warpAffine(frame, M, (self.w, self.h)) 
         return frame
-    
+
     def getFPS(self): 
         return str(self.framecount / (self.starttime - datetime.datetime.now()).total_seconds())
-    
+
     def resetFPS(self): 
         self.starttime = datetime.datetime.now()
         self.framecount = 0
-			
+
     def quit(self):
-		self.stopped = True
-		self.capture.release()
-
-
+        self.stopped = True
+        self.capture.release()

@@ -4,7 +4,7 @@
 
 #import threading
 import webcolors
-import pyttsx
+import pyttsx3 as pyttsx
 import random
 
 class Speak():
@@ -18,7 +18,7 @@ class Speak():
         self.taunts = cfg['speak']['taunts']
         self.tauntidx = random.randint(0, len(self.taunts)-1) #first taunt
     def say(self, msg):
-        print "*** ROBOT ***: \"" + msg + "\""
+        print("*** ROBOT ***: \"" + msg + "\"")
         if not self.quiet:
             self.engine.say(msg)
             self.engine.runAndWait()
@@ -26,7 +26,7 @@ class Speak():
         currvol = float(self.engine.getProperty('volume'))
         vol = currvol + val
         if (0.0 <= vol <= 1.0):
-            print "volume:", vol
+            print("volume:", vol)
             self.engine.setProperty('volume', vol)
             self.cfg['speak']['volume'] = vol
     def taunt(self):
@@ -37,12 +37,12 @@ class Speak():
             self.tauntidx = 0   
             
 def BGRname(bgrcolor):
-    print "rgb = ", bgrcolor[2], bgrcolor[1], bgrcolor[0]
+    print("rgb = ", bgrcolor[2], bgrcolor[1], bgrcolor[0])
     try:
         closest_name = webcolors.rgb_to_name((bgrcolor[2], bgrcolor[1], bgrcolor[0]))
     except ValueError:
         min_colors = {}
-        for key, name in webcolors.css21_hex_to_names.items():
+        for key, name in list(webcolors.CSS21_HEX_TO_NAMES.items()):
             r_c, g_c, b_c = webcolors.hex_to_rgb(key)
             bd = (b_c - bgrcolor[0]) ** 2
             gd = (g_c - bgrcolor[1]) ** 2

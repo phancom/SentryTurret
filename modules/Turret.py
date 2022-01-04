@@ -3,9 +3,9 @@
 import threading
 from time import sleep
 try:
-    from driver.Adafruit_PWM_Servo_Driver import PWM
+    from .driver.Adafruit_PWM_Servo_Driver import PWM
 except ImportError:
-    from driver.monkeypatch import PWM
+    from .driver.monkeypatch import PWM
 
 # ===========================================================================
 # Wrapper for your servo driver goes here.
@@ -120,7 +120,7 @@ class Targetting(threading.Thread) :
         #fire if on target
         if self.armed and not self.triggertimer.isSet():
             if (-(self.firesensitivity) < self.deltaxy[0] < self.firesensitivity) and (-(self.firesensitivity) < self.deltaxy[1] < self.firesensitivity):
-                print ">>> PEW! PEW!"
+                print(">>> PEW! PEW!")
                 if not self.deltaxy[0] == 0:
                     self.fire()
                     
