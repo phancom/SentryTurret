@@ -6,7 +6,10 @@ The purpose of this project is to create a cheap autonomous turret, capable of d
 
 ## Overview
 
-These instructions were written for constructing the robot with RPi2+RaspiCam+servos, but **you may try it out on a desktop with a webcam** (after installing required python packages).
+Modified project is constucted using Pi4, RaspiCam, 1/8 scale winch servos.
+Updating code to remove dependecy on Adafruit servo hat lib and hardware.
+Using Python3.7
+
 
 **The basic structure of the program follows:**
 - Main()
@@ -43,7 +46,7 @@ configobj
 python-smbus
 webcolors
 bluez python-bluetooth python-gobject  (for bluetooth)
-pyttsx (for speech)
+pyttsx3 (for speech)
 ~~~
 
 **Installing dlib**
